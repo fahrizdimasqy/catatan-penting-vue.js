@@ -9,6 +9,21 @@ computed digunakan sebagai variabel bayangan yang nilainya bergantung pada varia
 ### Properti Filters
 filters digunakan untuk memanipulasi tampilan dari suatu teks.
 
+## Mengenal Directive
+
+### v-html
+Merupakan directive yang digunakan untuk menampilkan data berupa kode HTML
+var vm = new Vue({
+el: '#app',
+data: {
+message: "<span style='color:red'>Hello World!</a>",
+},
+})
+
+<p v-html="message"></p>
+
+
+
 ### Fungsi fungsi built in javascript
 * push
 Fungsi push digunakan untuk menambahkan data elemen baru pada suatu array pada posisi index terakhir.
