@@ -7,3 +7,10 @@ contoh: vm.books.push('Mastering PHP 7')
 * pop
 fungsi pop untuk menghapus elemen terakhir dari suatu array.
 contoh: vm.books.pop()
+* unshift
+Fungsi unshift digunakan untuk menambahkan data elemen baru pada suatu array pada posisi index pertama
+(0).
+contoh: vm.books.unshift('Mastering PHP 7')
+* shift
+fungsi shift untuk menghapus elemen pertama dari suatu array.
+contoh: vm.books.shift()
