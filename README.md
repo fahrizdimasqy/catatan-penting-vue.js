@@ -220,3 +220,12 @@ array.
   
   - parameter pertama menujukkan posisi index dari data yang akan ditambahkan.
   - adapun parameter kedua menunjukkan jumlah elemen pada array yang akan dihapus.
+  
+Fungsi splice juga bisa digunakan untuk menghapus elemen dari suatu array pada index tertentu. 
+Misalnya: ```javascript vm.books.splice(2,1)```
+Perintah tersebut akan menghapus elemen array pada index ke-dua sebanyak satu elemen.
+
+Perintah splice pun bisa digunakan untuk mengubah elemen dari suatu array pada index tertentu. 
+Misalnya: ```javascript vm.books.splice(1,1,'Mastering Hacking')```
+Perintah tersebut akan menghapus elemen array index ke-satu sekaligus menambahkan elemen baru pada
+index ke-satu juga. (ingat: index array dimulai dari 0)
