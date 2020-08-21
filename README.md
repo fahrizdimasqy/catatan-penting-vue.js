@@ -14,3 +14,7 @@ contoh: vm.books.unshift('Mastering PHP 7')
 * shift
 fungsi shift untuk menghapus elemen pertama dari suatu array.
 contoh: vm.books.shift()
+* sort Fungsi sort digunakan untuk mengurutkan data elemen pada suatu array secara ascending
+contoh: vm.books.sort()
+* reverse Fungsi reverse melakukan sebaliknya
+contoh: vm.books.reverse()
