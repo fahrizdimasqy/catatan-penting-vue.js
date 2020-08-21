@@ -12,6 +12,20 @@ Properti computed yang digunakan untuk memonitor perubahan data juga sudah berja
 membutuhkan request data dari server maka hook ini adalah hook yang tepat untuk melakukannya.
 Berikut ini contoh kode untuk menggunakan kedua hook ini yaitu dengan method beforeCreate dan created.
 
+### mount
+3. beforeMount yaitu hook ketika template dicompile.
+4. mounted yaitu hook ketika elemen (properti el) telah diinisialisasi, data telah dimuat dan view telah
+dirender.
+
+### update
+5. beforeUpdate yaitu hook yang terjadi setelah mounted dan hanya terjadi jika ada perubahan data yang
+mengakibatkan render ulang. Tepatnya, hook ini terjadi sebelum view dirender ulang.
+6. updated yaitu hook yang terjadi setelah beforeUpdate yaitu setelah view dirender ulang.
+
+### destroy
+7. beforeDestroy yaitu hook yang terjadi sebelum component dihapus.
+8. destroyed yaitu hook yang terjadi setelah objek Vue dihapus.
+
 ```javascript
 var vm = new Vue({
 el: '#app',
