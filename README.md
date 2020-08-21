@@ -47,7 +47,7 @@ filters digunakan untuk memanipulasi tampilan dari suatu teks.
 
 ### v-html
 Merupakan directive yang digunakan untuk menampilkan data berupa kode HTML
-```Javascript
+```javascript
 var vm = new Vue({
 el: '#app',
 data: {
