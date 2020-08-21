@@ -1,5 +1,14 @@
 # catatan-penting-vue.js
 
+### Properti Method
+Properti methods digunakan untuk fungsi yang bisa dipanggil melalui suatu event
+
+### Properti Computed
+computed digunakan sebagai variabel bayangan yang nilainya bergantung pada variabel data,
+
+### Properti Filters
+filters digunakan untuk memanipulasi tampilan dari suatu teks.
+
 ### Fungsi fungsi built in javascript
 * push
 Fungsi push digunakan untuk menambahkan data elemen baru pada suatu array pada posisi index terakhir.
