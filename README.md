@@ -13,7 +13,7 @@ filters digunakan untuk memanipulasi tampilan dari suatu teks.
 
 ### v-html
 Merupakan directive yang digunakan untuk menampilkan data berupa kode HTML
-```
+```Javascript
 var vm = new Vue({
 el: '#app',
 data: {
@@ -22,7 +22,7 @@ message: "<span style='color:red'>Hello World!</a>",
 })
 ```
 
-```
+```html
 <p v-html="message"></p>
 ```
 
