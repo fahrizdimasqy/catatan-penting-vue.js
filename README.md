@@ -119,12 +119,12 @@ pada directive ini menggunakan properti display pada CSS.
   </div>
 </div>
 <script>
-var vm = new Vue({
-el: '#app',
-data: {
-nilai: "B",
-},
-})
+  var vm = new Vue({
+    el: '#app',
+    data: {
+      nilai: "B",
+    },
+  })
 </script>
 ````
 
