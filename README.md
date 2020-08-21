@@ -139,6 +139,52 @@ Directive ini bertugas memantau aktifitas (aksi) yang dilakukan terhadap suatu e
 ```
 
 > **Catatan: info() adalah method yang harus kita deklarasikan dalam Vue, lihat pembahasan berikutnya.** 
+> **Catatan: penulisan directive v-on: dapat disingkat menjadi @, contoh: **
+
+```html
+<button @click="info('halo')">Info</button>
+```
+### v-bind
+Directive ini berfungsi untuk mem-binding atribut HTML atau komponen agar nilainya terupdate secara
+reactive sesuai dengan datanya, kebalikan dari v-on.
+
+```javascript
+<div id="app">
+  <img v-bind:src="imageSrc">
+</div>
+<script>
+  var vm = new Vue({
+  el: '#app',
+    data: {
+    imageSrc: 'logo-vue.png',
+  }
+ })
+  setTimeout(()=>{
+  vm.imageSrc = 'flowers.jpg'
+ },3000);
+</script>
+```
+
+Pada contoh di atas, attribut src mem-binding variabel imageSrc, sehingga nilai dari atribut src tersebut
+mengikuti nilai dari variabel imageSrc. Demikian juga ketika nilai variabel imageSrc diganti secara runtime
+maka image yang ditampilkanpun juga akan berubah karena variabel imageSrc diubah.
+
+> **Pada contoh di atas, attribut src mem-binding variabel imageSrc, sehingga nilai dari atribut src tersebut
+mengikuti nilai dari variabel imageSrc. Demikian juga ketika nilai variabel imageSrc diganti secara runtime
+maka image yang ditampilkanpun juga akan berubah karena variabel imageSrc diubah.**
+
+```html
+<a :href="url"> Website VueJS </a>
+```
+
+## Dynamic Argument
+
+```html
+<a v-bind:[nama_atribut]="url"> ... </a>
+```
+Nah pada contoh di atas, variabel nama_atribut akan secara dinamis dievaluasi sebagai JS expression, dan
+hasil dari evaluasi itu akan digunakan sebagai nilai akhir dari argumen direktif tersebut. Misalnya pada Vue
+kita set data nama_atribut bernilai "href", maka binding directive ini akan sama dengan kode v-bind:href.
 
 ### Fungsi fungsi built in javascript
 * push
