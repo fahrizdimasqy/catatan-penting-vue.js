@@ -128,6 +128,18 @@ pada directive ini menggunakan properti display pada CSS.
 </script>
 ````
 
+### v-on
+Merupakan directive yang berperan sebagai sebuah event listener pada elemen HTML/komponen Vue.
+Directive ini bertugas memantau aktifitas (aksi) yang dilakukan terhadap suatu elemen HTML/komponen Vue.
+
+```javascript
+<button v-on:click="info('halo')">
+  Informasi
+</button>
+```
+
+` Catatan: info() adalah method yang harus kita deklarasikan dalam Vue, lihat pembahasan berikutnya. `
+
 ### Fungsi fungsi built in javascript
 * push
 Fungsi push digunakan untuk menambahkan data elemen baru pada suatu array pada posisi index terakhir.
