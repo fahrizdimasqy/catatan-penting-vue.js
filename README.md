@@ -1,5 +1,39 @@
 # catatan-penting-vue.js
 
+### Siklus Objek Vue
+
+### Create
+
+1. beforeCreate yaitu hook sesaat setelah objek Vue dan komponennya diinisialisasi. Properti data belum
+dapat diakses atau digunakan pada hook ini.
+2. created yaitu hook ketika objek Vue telah selesai diciptakan. Pada hook ini, sifat reactivity pada properti
+data juga sudah didefinisikan sehingga kita sudah diizinkan untuk mengakses dan memanipulasi data.
+Properti computed yang digunakan untuk memonitor perubahan data juga sudah berjalan. Jika aplikasi
+membutuhkan request data dari server maka hook ini adalah hook yang tepat untuk melakukannya.
+Berikut ini contoh kode untuk menggunakan kedua hook ini yaitu dengan method beforeCreate dan created.
+
+```javascript
+var vm = new Vue({
+el: '#app',
+data: {
+message: 'Hello world!',
+},
+beforeCreate () {
+console.log('before create: '+
+'message = ' + this.message)
+},
+created () {
+console.log('created: '+
+'message = ' + this.message)
+},
+});
+```
+Pada gambar di atas terlihat bahwa hook created bisa mengakses variabel message sebaliknya beforeCreate
+tidak bisa.
+Apa yang terjadi pada properti data dapat kita lihat juga dengan cara tambahkan kode hook created menjadi
+sebagai berikut.
+
+
 ### Properti Method
 Properti methods digunakan untuk fungsi yang bisa dipanggil melalui suatu event
 
