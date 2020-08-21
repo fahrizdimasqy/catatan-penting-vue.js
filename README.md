@@ -186,21 +186,31 @@ Nah pada contoh di atas, variabel nama_atribut akan secara dinamis dievaluasi se
 hasil dari evaluasi itu akan digunakan sebagai nilai akhir dari argumen direktif tersebut. Misalnya pada Vue
 kita set data nama_atribut bernilai "href", maka binding directive ini akan sama dengan kode v-bind:href.
 
-### Fungsi fungsi built in javascript
-* push
+## Fungsi fungsi built in javascript
+### push
 Fungsi push digunakan untuk menambahkan data elemen baru pada suatu array pada posisi index terakhir.
 contoh: vm.books.push('Mastering PHP 7')
-* pop
+
+### * pop
 fungsi pop untuk menghapus elemen terakhir dari suatu array.
 contoh: vm.books.pop()
-* unshift
+
+### * unshift
 Fungsi unshift digunakan untuk menambahkan data elemen baru pada suatu array pada posisi index pertama
 (0).
 contoh: vm.books.unshift('Mastering PHP 7')
-* shift
+
+### * shift
 fungsi shift untuk menghapus elemen pertama dari suatu array.
 contoh: vm.books.shift()
-* sort Fungsi sort digunakan untuk mengurutkan data elemen pada suatu array secara ascending
+
+### * sort 
+Fungsi sort digunakan untuk mengurutkan data elemen pada suatu array secara ascending
 contoh: vm.books.sort()
-* reverse Fungsi reverse melakukan sebaliknya
+
+### * reverse 
+Fungsi reverse melakukan sebaliknya
 contoh: vm.books.reverse()
+
+### * splice
+
