@@ -229,3 +229,45 @@ Perintah splice pun bisa digunakan untuk mengubah elemen dari suatu array pada i
 Misalnya: ```javascript vm.books.splice(1,1,'Mastering Hacking')```
 Perintah tersebut akan menghapus elemen array index ke-satu sekaligus menambahkan elemen baru pada
 index ke-satu juga. (ingat: index array dimulai dari 0)
+
+* Filter
+fungsi filter digunakan untuk mem-filter elemen dari array berdasarkan kriteria tertentu. Misalnya
+mengambil judul buku (dari books) yang diawali dengan huruf M.
+
+```javascript
+vm.books = vm.books.filter((book)=>{
+return book[0]==='M'
+})
+```
+Implementasi pada Vue biasanya dengan menggunakan properti computed. Properti ini berupa fungsi-fungsi
+yang nilainya senantiasa dipantau atau observe sesuai dengan perubahan data.
+
+```javascript
+<div id="app">
+<ul>
+<li v-for="(book, index) of booksPrefixM" :key="index">
+{{ book }}
+</li>
+</ul>
+</div>
+<script type="text/javascript">
+var vm = new Vue({
+el: '#app',
+data: {
+books : [
+'C++ High Performance',
+'Mastering Linux Security and Hardening', 'Python Programming
+Blueprints',
+'Mastering PostgreSQL 10'
+]
+},
+computed: {
+booksPrefixM() {
+return this.books.filter((book)=>{
+return book[0]==='M'
+})
+}
+}
+})
+</script>
+```
