@@ -1,6 +1,6 @@
 # catatan-penting-vue.js
 
-### Siklus Objek Vue
+## Siklus Objek Vue
 
 ### Create
 
