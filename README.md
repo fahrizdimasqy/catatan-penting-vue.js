@@ -74,6 +74,34 @@ message: "<span style='color:red'>Hello World!</a>",
 <p v-html="message"></p>
 ```
 
+### v-once
+Merupakan directive yang digunakan agar nilai variabel pada template tidak bisa diubah-ubah lagi.
+
+```html
+<p v-once>{{ message }}</p>
+```
+
+### v-text
+Merupakan directive yang digunakan untuk menampilkan string biasa, fungsinya sama dengan mustache
+atau double kurung kurawal.
+
+```html
+<p v-text="message"></p>
+<!-- sama dengan -->
+<p>{{ message }}</p>
+```
+
+### v-show
+Merupakan directive yang digunakan untuk menampilkan atau menyembunyikan suatu elemen DOM.
+Directive ini membutuhkan variabel bertipe boolean.
+
+```html
+  <p v-show="displayMessage">{{ message }}</p>
+```
+Ketika variabel displayMessage bernilai true maka teks message akan terlihat di browser, sebaliknya jika
+jika variabel displayMessage bernilai false maka teks message tidak akan terlihat di browser. Proses on/off
+pada directive ini menggunakan properti display pada CSS.
+
 ### Fungsi fungsi built in javascript
 * push
 Fungsi push digunakan untuk menambahkan data elemen baru pada suatu array pada posisi index terakhir.
