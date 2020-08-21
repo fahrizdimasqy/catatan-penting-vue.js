@@ -102,6 +102,32 @@ Ketika variabel displayMessage bernilai true maka teks message akan terlihat di 
 jika variabel displayMessage bernilai false maka teks message tidak akan terlihat di browser. Proses on/off
 pada directive ini menggunakan properti display pada CSS.
 
+### V-if
+```javascript
+<div id="app">
+  <div v-if="nilai === 'A'">
+  Sempurna
+  </div>
+  <div v-else-if="nilai === 'B'">
+    Bagus
+  </div>
+  <div v-else-if="nilai === 'C'">
+    Cukup
+  </div>
+  <div v-else>
+    Kurang
+  </div>
+</div>
+<script>
+var vm = new Vue({
+el: '#app',
+data: {
+nilai: "B",
+},
+})
+</script>
+````
+
 ### Fungsi fungsi built in javascript
 * push
 Fungsi push digunakan untuk menambahkan data elemen baru pada suatu array pada posisi index terakhir.
