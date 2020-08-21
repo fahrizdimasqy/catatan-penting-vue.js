@@ -138,7 +138,7 @@ Directive ini bertugas memantau aktifitas (aksi) yang dilakukan terhadap suatu e
 </button>
 ```
 
-` Catatan: info() adalah method yang harus kita deklarasikan dalam Vue, lihat pembahasan berikutnya. `
+> **Catatan: info() adalah method yang harus kita deklarasikan dalam Vue, lihat pembahasan berikutnya.** 
 
 ### Fungsi fungsi built in javascript
 * push
