@@ -187,30 +187,36 @@ hasil dari evaluasi itu akan digunakan sebagai nilai akhir dari argumen direktif
 kita set data nama_atribut bernilai "href", maka binding directive ini akan sama dengan kode v-bind:href.
 
 ## Fungsi fungsi built in javascript
-### push
+* push
 Fungsi push digunakan untuk menambahkan data elemen baru pada suatu array pada posisi index terakhir.
 contoh: vm.books.push('Mastering PHP 7')
 
-### * pop
+* pop
 fungsi pop untuk menghapus elemen terakhir dari suatu array.
 contoh: vm.books.pop()
 
-### * unshift
+* unshift
 Fungsi unshift digunakan untuk menambahkan data elemen baru pada suatu array pada posisi index pertama
 (0).
 contoh: vm.books.unshift('Mastering PHP 7')
 
-### * shift
+* shift
 fungsi shift untuk menghapus elemen pertama dari suatu array.
 contoh: vm.books.shift()
 
-### * sort 
+* sort 
 Fungsi sort digunakan untuk mengurutkan data elemen pada suatu array secara ascending
 contoh: vm.books.sort()
 
-### * reverse 
+* reverse 
 Fungsi reverse melakukan sebaliknya
 contoh: vm.books.reverse()
 
-### * splice
-
+* splice
+Fungsi splice ini multi fungsi, bisa digunakan untuk menambahkan data elemen baru pada suatu array.
+contoh: vm.books.splice(2,0,'Mastering PHP 7')
+Perintah tersebut akan menambahkan data elemen baru yaitu 'Mastering PHP 7' pada index ke dua dari
+array.
+  
+  - parameter pertama menujukkan posisi index dari data yang akan ditambahkan.
+  - adapun parameter kedua menunjukkan jumlah elemen pada array yang akan dihapus.
