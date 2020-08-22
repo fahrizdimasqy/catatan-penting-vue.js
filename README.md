@@ -277,3 +277,12 @@ maka sebenarnya kita bisa juga melakukannya dengan fungsi set Vue.
 ```javascript
 Vue.set(data_array, index_yang_akan_diganti, nilai_baru)
 ```
+## Perubahan Data Pada Objek
+Seperti halnya array, objek pun juga perlu fungsi khusus untuk melakukan perubahan data.
+Untuk melakukan penambahan data properti pada objek, kita bisa gunakan fungsi set bawaan Vue.
+
+```javascript
+Vue.set(object, key, value)
+atau
+vm.$set(object, key, value)
+```
