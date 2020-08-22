@@ -343,3 +343,13 @@ var vm = new Vue({
             }
         })
 ```
+
+Directive v-model juga memiliki modifier, diantaranya adalah number dan trim.
+Modifier number digunakan untuk memastikan input data dari user bertipe numeric. Sedangkan modifier
+trim digunakan untuk menghapus spasi putih diawal atau akhir dari string.
+```html
+<input type="number" name="price" v-model.number="price">
+<br><br>
+<input type="text" name="title" v-model.trim="title"
+placeholder="masukkan judul"> "{{ title }}"
+```
