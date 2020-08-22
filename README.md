@@ -271,3 +271,9 @@ return book[0]==='M'
 })
 </script>
 ```
+
+jika pada contoh sebelumnya untuk mengubah data pada suatu elemen array menggunakan fungsi splice
+maka sebenarnya kita bisa juga melakukannya dengan fungsi set Vue.
+```vue
+Vue.set(data_array, index_yang_akan_diganti, nilai_baru)
+```
