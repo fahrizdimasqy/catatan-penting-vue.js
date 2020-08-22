@@ -286,3 +286,53 @@ Vue.set(object, key, value)
 atau
 vm.$set(object, key, value)
 ```
+
+```javascript
+Vue.set(vm.books2, 'title', 'C++ High Performancee')
+```
+
+Namun, jika properti yang ingin kita tambahkan lebih dari satu maka kita bisa gunakan cara berikut.
+```javascript
+vm.books2 = Object.assign({}, vm.books2, {
+  id: 66,
+  price: 15000
+})
+```
+## Input Binding
+```javascript
+<div id="app">
+<form>
+<input type="text" name="title" :value="title" @input="title =
+$event.target.value" />
+{{ title }}
+</form>
+</div>
+<script>
+var vm = new Vue({
+  el: '#app',
+  data: {
+    title: "Mastering "
+},
+})
+</script>
+```
+Atribut value di-bind dan event oninput di-listen. Kode :value="title" menunjukkan bahwa nilai dari field
+input ini di-bind dengan variabel title, sedangkan kode @input="title = $event.target.value"
+artinya ketika field diinput maka nilai variabel title akan diubah sesuai isian user.
+
+> Catatan: metode ini akan dipakai ketika kita bermain dengan komponen.
+
+untuk mengatasi "kerumitan" ini, Vue memperkenalkan directive v-model yang bertugas
+melakukan two way data binding tersebut. Berikut ini contohnya.
+
+```javascript
+<form>
+<input type="text" name="title" v-model="title" placeholder="masukkan
+judul">
+{{ title }}
+<br><br>
+<textarea name="description" v-model="description"
+placeholder="masukkan deskripsi"></textarea>
+{{ description }}
+</form>
+```
