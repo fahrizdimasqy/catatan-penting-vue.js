@@ -335,4 +335,11 @@ judul">
 placeholder="masukkan deskripsi"></textarea>
 {{ description }}
 </form>
+var vm = new Vue({
+            el: '#app',
+            data: {
+                title: "",
+                description: ""
+            }
+        })
 ```
