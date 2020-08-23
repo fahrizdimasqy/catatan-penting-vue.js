@@ -375,6 +375,7 @@ categories: []
 })
 ```
 ### generate menggunakan directive v-for
+
 ```javascript
 var vm = new Vue({
             el: '#app',
@@ -396,6 +397,7 @@ var vm = new Vue({
             }
         })
         ```
+       
         ```javascript
         <select name="categories" v-model="categories" multiple>
           <option v-for="option in options" :value="option.value">
@@ -403,5 +405,6 @@ var vm = new Vue({
           </option>
         </select>
         <span>Selected: {{ categories }}</span>
+        ```
         
 
