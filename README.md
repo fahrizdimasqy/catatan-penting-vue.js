@@ -353,3 +353,55 @@ trim digunakan untuk menghapus spasi putih diawal atau akhir dari string.
 <input type="text" name="title" v-model.trim="title"
 placeholder="masukkan judul"> "{{ title }}"
 ```
+### Array menggunakan v-model
+Input data bertipe array terjadi pada field input dengan kemungkinan pilihan lebih dari satu seperti checkbox
+multiple dan select multiple.
+```html
+<select v-model="categories" multiple>
+<option value="01">Graphics Programming</option>
+<option value="02">Mobile Application Development</option>
+<option value="03">Virtual and Augmented Reality</option>
+</select>
+<span>Selected: {{ categories }}</span>
+```
+
+```javascript
+var vm = new Vue({
+el: '#app',
+data: {
+hobbies: [],
+categories: []
+}
+})
+```
+### generate menggunakan directive v-for
+```javascript
+var vm = new Vue({
+            el: '#app',
+            data: {
+                categories: [],
+                options: [{
+                        text: 'Graphic Programming',
+                        value: '01'
+                    },
+                    {
+                        text: 'Mobile Application Development',
+                        value: '02'
+                    },
+                    {
+                        text: 'Virtual and Augmented Reality',
+                        value: '03'
+                    }
+                ]
+            }
+        })
+        ```
+        ```javascript
+        <select name="categories" v-model="categories" multiple>
+          <option v-for="option in options" :value="option.value">
+            {{ option.text }}
+          </option>
+        </select>
+        <span>Selected: {{ categories }}</span>
+        
+
