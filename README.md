@@ -356,6 +356,7 @@ placeholder="masukkan judul"> "{{ title }}"
 ### Array menggunakan v-model
 Input data bertipe array terjadi pada field input dengan kemungkinan pilihan lebih dari satu seperti checkbox
 multiple dan select multiple.
+
 ```html
 <select v-model="categories" multiple>
 <option value="01">Graphics Programming</option>
@@ -375,7 +376,7 @@ categories: []
 })
 ```
 ### generate menggunakan directive v-for
-
+lorem 
 ```javascript
 var vm = new Vue({
             el: '#app',
@@ -396,11 +397,15 @@ var vm = new Vue({
                 ]
             }
         })
-        
-        <select name="categories" v-model="categories" multiple>
+```
+   ```html
+          <select name="categories" v-model="categories" multiple>
           <option v-for="option in options" :value="option.value">
             {{ option.text }}
           </option>
         </select>
         <span>Selected: {{ categories }}</span>
-        ```
+  ```
+        
+ 
+     
