@@ -404,5 +404,3 @@ var vm = new Vue({
         </select>
         <span>Selected: {{ categories }}</span>
         ```
-        
-
