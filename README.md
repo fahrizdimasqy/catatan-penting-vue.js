@@ -396,9 +396,7 @@ var vm = new Vue({
                 ]
             }
         })
-        ```
-       
-        ```javascript
+        
         <select name="categories" v-model="categories" multiple>
           <option v-for="option in options" :value="option.value">
             {{ option.text }}
