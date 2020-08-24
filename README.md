@@ -137,6 +137,29 @@ Directive ini bertugas memantau aktifitas (aksi) yang dilakukan terhadap suatu e
   Informasi
 </button>
 ```
+ita bisa mencegah redirect dengan menggunakan perintah
+```
+event.preventDefault(),
+```
+caranya,
+tambahkan parameter $event pada pemanggilan fungsi link di template.
+
+```html
+<a href="http://vuejs.org" v-on:click="link($event)">
+Vuejs.org
+</a>
+```
+
+```javascript
+...
+methods: {
+  link (event) {
+  alert('Go to link')
+  event.preventDefault()
+  }
+}
+
+```
 
 > **Catatan: info() adalah method yang harus kita deklarasikan dalam Vue, lihat pembahasan berikutnya.** 
 > **Catatan: penulisan directive v-on: dapat disingkat menjadi @, contoh: **
@@ -406,6 +429,16 @@ var vm = new Vue({
         </select>
         <span>Selected: {{ categories }}</span>
   ```
-        
- 
+  
+  ## Handling Submit Form & Validation
+Sebagaimana kita ketahui bahwa form memiliki event submit yang umumnya digunakan untuk mengirimkan
+data (yang berasal dari field input user) ke server atau ke bagian lain dari aplikasi.
+```html
+<form @submit="submitForm($event)" action="http://example.com/add-
+product" method="post">
+```
+
+### Validasi Data
+Proses validasi adalah proses memastikan setiap isian yang diinput oleh user melalui form tersebut sesuai
+dengan persyaratan minimal yang kita tentukan.
      
