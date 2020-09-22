@@ -440,5 +440,114 @@ product" method="post">
 
 ### Validasi Data
 Proses validasi adalah proses memastikan setiap isian yang diinput oleh user melalui form tersebut sesuai
-dengan persyaratan minimal yang kita tentukan.
+dengan persyaratan minimal yang kita tentukan.Misalnya: title harus diisi dan minimal 3 karakter, description
+boleh tidak diisi namun kalau diisi maka tidak boleh lebih dari 500 karakter, price tidak boleh minus, dsb. Jika
+ditemukan terdapat isian yang tidak memenuhi syarat minimal maka akan dimunculkan pesan peringatan
+berupa alert serta dicatat sebagai error (counter). Pada bagian akhir kemudian dicek secara total apakah
+terdapat error (error lebih dari 0) ataukan tidak (error = 0), jika tidak ada error maka ditampilkan pesan terima
+kasih dan kode untuk mengirim data tersebut ke server.
+
+```javascript
+submitForm(event){
+  let error = 0
+  if(this.title.length < 3){
+  error++
+  alert('Title minimal 3 karakter!')
+}
+else if(this.description.length > 500){
+  error++
+  alert('Description maximal 500 karakter!')
+}
+else if(this.authors.length < 3){
+  error++
+  alert('Authors minimal 3 karakter!')
+}
+else if(this.price < 0){
+  error++
+  alert('Price tidak boleh minus!')
+}
+else if(this.categories.length === 0){
+  error++ 
+  alert('Pilih minimal 1 category!')
+}
+if( error === 0 ){
+  alert('Terima kasih telah mengisi data dengan benar!')
+  // kirim data ke server
+}
+event.preventDefault()
+}
+
+```
+Kita bisa juga menambahkan method setFocus pada input yang belum memenuhi syarat. Sehingga akan
+memudahkan dari sisi user. Caranya dengan menambahkan directive ref sebagai penanda unik pada field
+input.
+
+```html
+<input type="text" name="title" ref="title" v-model="title">
+```
+
+```javascript
+if(this.title.length < 3){
+  error++ 
+  this.$refs.title.focus()
+  alert('Title minimal 3 karakter!')
+}
+```
+
+>Bisa juga dengan kode ini this.$refs.title.select().
+
+>Catatan: tambahkan juga directive ref pada form supaya lebih mudah nantinya menangani elemen
+form tersebut.
+
+### Prepare Data Submit
+Setelah validasi form dilakukan, langkah berikutnya adalah mempersiapkan data sebelum dikirimkan ke
+server. Kita bisa menggunakan object FormData
+(https://developer.mozilla.org/en-US/docs/Web/API/FormData/FormData)  untuk mem-packing data hasil isian form menjadi sebuah object.
+
+```javascript
+let formData = new FormData();
+// tambahkan satu persatu field
+formData.append('username', 'Chris');
+```
+
+Berikut ini implementasi pada kasus kita.
+```javascript
+if( this.errors.length === 0 ){
+    alert('Terima kasih telah mengisi data dengan benar!')
+    // persiapkan data
+    let formData = new FormData()
+    formData.append('title', this.title)
+    formData.append('description', this.description)
+    formData.append('authors', this.authors)
+    formData.append('price', this.price)
+    formData.append('categories', this.categories)
+    // kirim data ke server
+}
+```
+
+Di samping cara di atas yaitu manual satu persatu dalam memasukkan data field, FormData juga
+menyediakan cara cepat untuk memasukkan semua data field yang dimiliki form ke dalam objek formData.
+Berikut yang kita dapat dari dokumentasi FormData.
+
+```javascript
+let myForm = document.getElementById('myForm');
+formData = new FormData(myForm);
+```
+Dengan sedikit modifikasi maka implementasi pada kasus kita menjadi sebagai berikut
+
+```javascript
+// persiapkan data
+let formBook = this.$refs.formBook
+formData = new FormData(formBook);
+// kirim data ke server
+```
+selesai
+
+> Catatan: untuk bisa menggunakan cara singkat ini syaratnya satu yaitu field pada form harus ada atribut name-nya.
+
+### Send Data To Server
+Setelah data di-bundle dalam satu objek formData, maka data siap untuk dikirim ke server. Pada bagian ini,
+kita akan mensimulasikan pengiriman data form ke server menggunakan PHP native.
+
+> Catatan: 80 adalah nomer port dari webserver, kita bebas mengubahnya dengan nomer lain yang sedang tidak digunakan.
      
