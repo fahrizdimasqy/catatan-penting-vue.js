@@ -50,12 +50,69 @@ sebagai berikut.
 
 ### Properti Method
 Properti methods digunakan untuk fungsi yang bisa dipanggil melalui suatu event
-
+```javascript
+var vm = new Vue({
+  el: '#app',
+  data: {
+  counter: 0
+ },
+ methods: {
+  increment () {
+  this.counter++
+  }
+ }
+})
+```
+```javascript
+<div id="app">
+ <h1>{{ counter }}</h1>
+ <button onclick="vm.increment()"> + </button>
+</div>
+```
 ### Properti Computed
 computed digunakan sebagai variabel bayangan yang nilainya bergantung pada variabel data,
-
+```javascript
+var vm = new Vue({
+  el: '#app',
+  data: {
+  firstName: 'Hafid',
+  lastName: 'Mukhlasin'
+ },
+ computed: {
+  fullName: function () {
+  return this.firstName + ' ' + this.lastName
+  }
+ }
+})
+```
+```javascript
+<div id="app">
+{{ fullName }}
+</div>
+```
 ### Properti Filters
 filters digunakan untuk memanipulasi tampilan dari suatu teks.
+Disamping methods dan computed, Objek Vue juga memiliki properti filters yang dapat berisi fungsi untuk
+digunakan memanipulasi tampilan atau format teks pada template. Filters ditulis dengan menggunakan
+simbol | atau “pipe”.
+Contoh penggunaan filters adalah untuk mengubah bentuk teks menjadi huruf kapital.
+```javascript
+<h1>{{ message | upper }}</h1>
+```
+```javascript
+var vm = new Vue({
+  el: '#app',
+  data: {
+  message: 'Hello world!',
+ },
+ filters: {
+  upper (text) {
+  return text.toUpperCase()
+  }
+ }
+})
+```
+
 
 ## Mengenal Directive
 
