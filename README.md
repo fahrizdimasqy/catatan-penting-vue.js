@@ -113,7 +113,6 @@ var vm = new Vue({
 })
 ```
 
-
 ## Mengenal Directive
 
 ### v-html
@@ -266,11 +265,195 @@ Nah pada contoh di atas, variabel nama_atribut akan secara dinamis dievaluasi se
 hasil dari evaluasi itu akan digunakan sebagai nilai akhir dari argumen direktif tersebut. Misalnya pada Vue
 kita set data nama_atribut bernilai "href", maka binding directive ini akan sama dengan kode v-bind:href.
 
+## List
+Menampilkan Data Array 
+```javascript
+books : [
+ 'C++ High Performance',
+ 'Mastering Linux Security and Hardening', 'Python Programming
+Blueprints',
+ 'Mastering PostgreSQL 10'
+]
+var vm = new Vue({
+ el: '#app',
+ data: {
+  books : [
+      'C++ High Performance',
+      'Mastering Linux Security and Hardening',
+      'Python Programming Blueprints',
+      'Mastering PostgreSQL 10'
+    ]
+  }
+})
+```
+```javascript
+<div id="app">
+ <ul>
+  <li v-for="book in books">
+  {{ book }}
+  </li>
+ </ul>
+</div>
+```
+Vue mempunyai directive v-for yang berfungsi untuk melakukan perulangan sebanyak elemen data yang
+ada pada variabel books. Sedangkan book (tanpa s) merupakan elemen (item satuan) dari array books
+yang bisa langsung ditampilkan tentunya dengan menggunakan mustache {{ }}
+Mari kita lihat hasilnya.
+
+v-for Menggunakan Tag Template
+```javascript
+<div id="app">
+  <ul>
+    <template v-for="book in books">
+      <li> {{ book }} </li>
+    </template>
+ </ul>
+</div>
+```
+v-for Menggunakan Index
+Index dari suatu array yang kita tampilkan melalui v-for bisa kita gunakan dengan menambahkan argumen
+kedua sebagai berikut
+```javascript
+<li v-for="(book, index) in books">
+ {{ index+1 }}. {{ book }}
+</li>
+```
+> Selain in, kita bisa juga menggunakan delimiter of pada directive v-for.
+Menampilkan Data Objek 
+```javascript
+book: {
+ id: 99,
+ title: 'C++ High Performance',
+ description: 'Write code that scales across CPU registers, multi-core,
+and machine clusters',
+ authors: 'Viktor Sehr, Björn Andrist',
+ publish_year: 2018,
+ price: 100000,
+}
+
+<li v-for="value of book">
+ {{ value }}
+</li>
+
+//Kita juga bisa menambahkan argumen kedua untuk key, seperti berikut.
+<li v-for="(value, key) of book">
+{{ key }} : {{ value }}
+</li>
+
+//Adapun argumen ketiga yang bisa kita tambahkan akan menjadi index dari objek tersebut.
+<li v-for="(value, key, index) of book">
+{{ index+1 }}. {{ key }} : {{ value }}
+</li>
+```
+### Menampilkan Data Collection
+```javascript
+books : [
+ {
+ id: 99,
+ title: 'C++ High Performance',
+ description: 'Write code that scales across CPU registers, multicore, and machine clusters',
+ authors: 'Viktor Sehr, Björn Andrist',
+ publish_year: 2018,
+ price: 100000,
+ image: 'c++-high-performance.png'
+ },
+ {
+ id: 100,
+ title: 'Mastering Linux Security and Hardening',
+ description: 'A comprehensive guide to mastering the art of
+preventing your Linux system from getting compromised',
+ authors: 'Donald A. Tevault',
+ publish_year: 2018,
+ price: 125000,
+ image: 'mastering-linux-security-and-hardening.png'
+ },
+ {
+ id: 101,
+ title: 'Mastering PostgreSQL 10',
+ description: 'Master the capabilities of PostgreSQL 10 to
+efficiently manage and maintain your database',
+ authors: 'Hans-Jürgen Schönig',
+ publish_year: 2016,
+ price: 90000,
+ image: 'mastering-postgresql-10.png'
+ },
+ {
+ id: 102,
+ title: 'Python Programming Blueprints',
+ description: 'How to build useful, real-world applications in the
+Python programming language',
+ authors: 'Daniel Furtado, Marcus Pennington',
+ publish_year: 2017,
+ price: 75000,
+ image: 'python-programming-blueprints.png'
+ }
+Pada kasus nyata, seringkali kita dapati data tidak dalam bentuk array sederhana ataupun objek, melainkan
+dalam bentuk yang lebih kompleks semisal array dari objek atau dalam format JSON (Javascript Object
+Notation).
+Perhatikan contoh data list berikut.
 ## Fungsi fungsi built in javascript
 * push
 Fungsi push digunakan untuk menambahkan data elemen baru pada suatu array pada posisi index terakhir.
 contoh: vm.books.push('Mastering PHP 7')
+```
+Misalnya data tersebut ingin kita tampilkan dalam bentuk HTML tabel, maka melalui pendekatan yang sama
+dengan sebelumnya kita bisa menyusun templatenya sebagai beriku
+```javascript
+<div id="app">
+ <table border=1>
+ <tr v-for="book of books">
+ <td>
+ <img width=100 :src="'images/books/' + book.image" />
+ </td>
+ </td>
+ <td>
+ title: {{ book.title }} <br>
+ description: {{ book.description }} <br>
+ authors: {{ book.authors }} <br>
+ price: {{ book.price }}
+ </td>
+ </tr>
+ </table>
+</div>
+```
+Mari kita bedah satu persatu kode di atas.
+Pertama, directive v-for kita letakkan di elemen tr pada table karena elemen itulah yang akan di-looping.
+Pilihan lain kita bisa juga menggunakan elemen <template>
+  
+Kedua, pada kolom pertama tabel ini kita akan tampilkan cover buku menggunakan kode <img width=100
+:src="'images/books/' + book.image" />. Supaya nilai dari atribut src dari elemen image menjadi
+dinamis sesuai dengan data books, maka (sebagaimana yang telah kita bahas pada bab terdahulu) kita perlu
+perlu menambahkan directive v-bind pada atribut tersebut. v-bind:src atau disingkat menjadi :src.
+Oleh karena variabel book yang dihasilkan dari perulangan variabel books berbentuk objek, maka kita bisa
+panggil setiap item didalamnya dengan menggunakan titik diikuti nama keynya.
 
+karena lokasi cover buku pada tutorial ini ada dalam direktori images/vue/books maka kita bisa
+tambahkan definisi direktori tersebut pada atribut src.
+Ketiga, sebagaimana poin kedua, pada kolom kedua dari tabel, bisa kita tampilkan detail bukunya.
+```javascript
+<td>
+ title: {{ book.title }} <br>
+ description: {{ book.description }} <br>
+ authors: {{ book.authors }} <br>
+ price: {{ book.price }}
+</td>
+```
+```javascipt
+<td>
+ <template v-for="(value, key) of book">
+ {{ key }} : {{ value }} <br>
+ </template>
+</td>
+```
+Atribut Key 
+Terkait dengan metode menampilkan list, Vue menyarankan agar sebisa mungkin menggunakan atribut key
+pada tag HTML yang ikut dalam perulangan v-for. Key tersebut berperan sebagai penanda unik.
+```javascript
+<li v-for="(book, index) of books" v-bind:key="index">
+{{ index+1 }}. {{ book }}
+</li>
+```
+Boleh juga kita gunakan directive v-for lagi sebab variabel book berbentuk objek
 * pop
 fungsi pop untuk menghapus elemen terakhir dari suatu array.
 contoh: vm.books.pop()
