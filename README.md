@@ -727,11 +727,85 @@ input.
 ```
 
 ```javascript
-if(this.title.length < 3){
-  error++ 
-  this.$refs.title.focus()
-  alert('Title minimal 3 karakter!')
-}
+var vm = new Vue({
+ el: '#app',
+ data: {
+ title: 'Google Glass with VueJS',
+ description: 'Control Google Glass with VueJS',
+ authors: 'Hafid Mukhlasin',
+ price: 75000,
+ categories: [],
+ options: [
+ { text: 'Graphics Programming', value: '01' },
+ { text: 'Mobile Application Development', value: '02' },
+ { text: 'Virtual and Augmented Reality', value: '03' }
+ ],
+ errors: []
+ },
+ methods: {
+ submitForm(event){
+ this.errors = []
+ if(this.title.length < 3){
+ this.errors.push('Title minimal 3 karakter!')
+ this.$refs.title.select()
+ }
+ if(this.description.length > 500){
+ this.errors.push('Description maximal 500 karakter!')
+ this.$refs.description.select()
+ }
+ if(this.authors.length < 3){
+ this.errors.push('Authors minimal 3 karakter!')
+ this.$refs.authors.select()
+ }
+ if(this.price < 0){
+ this.errors.push('Price tidak boleh minus!')
+ this.$refs.price.select()
+ }
+ if(this.categories.length === 0){
+ this.errors.push('Pilih minimal 1 category!')
+ this.$refs.categories.focus()
+ }
+ if( this.errors.length === 0 ){
+ alert('Terima kasih telah mengisi data dengan benar!')
+ // kirim data ke server
+ }
+ }
+ }
+})
+```
+```javascript
+<form ref="formBook" @submit.prevent="submitForm($event)"
+action="http://example.com/add-product" method="post">
+
+ <p v-if="errors.length">
+ <b>Please correct the following error(s):</b>
+ <ul>
+ <li v-for="error in errors">{{ error }}</li>
+ </ul>
+ </p>
+ <label>Title:</label>
+ <input name="title" ref="title" type="text" v-model="title">
+ <label>Description:</label>
+ <textarea name="description" ref="description" v-model="description">
+</textarea>
+
+ <label>Authors:</label>
+ <input name="authors" ref="authors" type="text" v-model="authors">
+
+ <label>Price:</label>
+ <input name="price" ref="price" type="number" v-model.number="price">
+
+ <label>Categories:</label>
+ <select name="categories" ref="categories" v-model="categories"
+multiple>
+ <option v-for="option in options" :value="option.value">
+ {{ option.text }}
+ </option>
+ </select>
+
+ <label></label>
+ <input type="submit" value="Submit">
+</form>
 ```
 
 >Bisa juga dengan kode ini this.$refs.title.select().
@@ -790,4 +864,43 @@ Setelah data di-bundle dalam satu objek formData, maka data siap untuk dikirim k
 kita akan mensimulasikan pengiriman data form ke server menggunakan PHP native.
 
 > Catatan: 80 adalah nomer port dari webserver, kita bebas mengubahnya dengan nomer lain yang sedang tidak digunakan.
-     
+```javascript
+if( this.errors.length === 0 ){
+ //alert('Terima kasih telah mengisi data dengan benar!')
+ // persiapkan data
+ let formBook = this.$refs.formBook
+ formData = new FormData(formBook);
+ // kirim data ke server
+ let xhttp = new XMLHttpRequest() // create objek XMLHttp
+ // definisikan fungsi ketika terjadi perubahan state
+ xhttp.onreadystatechange = function() {
+ // state ini menunjukkan data terkirim dan diterima server dengan
+baik
+ if (this.readyState == 4 && this.status == 200) {
+ // respon text dari server
+ console.log(this.responseText)
+ }
+ }
+ // sesuaikan dengan lokasi file index.php di lokasi komputer kamu
+ xhttp.open("POST", "http://localhost/index.php", true)
+ // bisa juga langsung nama filenya jika berada dalam satu folder yang
+sama
+ // xhttp.open("POST", "index.php", true)
+ // kirim objek formData
+ xhttp.send(formData)
+}
+```
+### Handling File Upload
+Pada sisi client, penanganan field bertipe file pada form pada dasarnya hampir sama saja dengan field
+bertipe lain.
+```javascript
+<label>Cover:</label>
+<input name="cover" ref="cover" type="file">
+```
+```javascript
+// get file yang dibrowse user
+let cover = this.$refs.cover.files[0]
+// tambahkan ke object formData
+formData.append("cover", cover);
+```
+
