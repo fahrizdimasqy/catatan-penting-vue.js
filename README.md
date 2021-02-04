@@ -904,3 +904,190 @@ let cover = this.$refs.cover.files[0]
 formData.append("cover", cover);
 ```
 
+### Kirim Data ke Component
+Vue mempunyai mekanisme untuk mengirimkan atau mengeset suatu data pada component yaitu dengan
+menggunakan properti props
+Untuk mendefinisikan props, pada component caranya cukup dengan menambahkan properti props.
+```javascript
+props: [ 'nama_props1', 'nama_props2' ],
+```
+Kemudian pada template dari component tersebut kita bisa akses props tersebut layaknya properti data
+```javascript
+template : `<div> {{ nama_props1 }} </div>`
+```
+Sebagai contoh, kita mempunyai component book, dengan tiga props yaitu title, description dan image
+```javascript
+var BookComponent = {
+  data () {
+    return {
+      classCard: 'card'
+    }
+   },
+ props: [ 'title', 'description', 'image' ],
+ template : `
+    <div :class="classCard">
+    <h3>{{ title }}</h3>
+    <img :src="'images/books/'+image" style="width:100%">
+    <p v-html="description"></p>
+    </div>
+  `
+}
+```
+Seperti biasa, kita perlu daftarkan component book pada objek utama Vue.
+```javascript
+new Vue({
+ el: '#app',
+ components: {
+ 'book': BookComponent,
+ }
+})
+```
+Pada bagian template utama, kita bisa deklarasikan component book dan sekaligus mendefinisikan nilai dari
+masing-masing props, sebagai berikut.
+```javascript
+<div id="app">
+ <book
+ title="C++ High Performance"
+ description="Write code that scales across CPU registers, multicore, and machine clusters"
+ image = "c++-high-performance.png"
+ >
+ </book>
+</div>
+```
+### Directive Pada Component
+Component pada Vue bisa diibaratkan sebagai elemen HTML di mana ada atribut berupa directive yang bisa
+diaplikasikan padanya. Sebagai contoh, kita akan menampilkan data dalam bentuk list menggunakan elemen
+berupa component. Adapun directive yang kita gunakan adalah v-for dan v-bind atau :.
+```javascript
+// deklarasi component book, lihat contoh sebelumnya
+// ...
+// deklarasi object vue dengan data books
+var vm = new Vue({
+ el: '#app',
+ components: {
+ 'book': BookComponent,
+ },
+ data: {
+ books : [
+ {
+ id: 99,
+ title: 'C++ High Performance',
+ description: 'Write code that scales across CPU
+registers, multi-core, and machine clusters',
+ authors: 'Viktor Sehr, Björn Andrist',
+ publish_year: 2018,
+ price: 100000,
+ image: 'c++-high-performance.png'
+ },
+ {
+ id: 100,
+ title: 'Mastering Linux Security and Hardening',
+ description: 'A comprehensive guide to mastering the art
+of preventing your Linux system from getting compromised',
+ authors: 'Donald A. Tevault',
+ publish_year: 2018,
+ price: 125000,
+ image: 'mastering-linux-security-and-hardening.png'
+ },
+ {
+ id: 101,
+ title: 'Mastering PostgreSQL 10',
+ description: 'Master the capabilities of PostgreSQL 10 to
+efficiently manage and maintain your database',
+ authors: 'Hans-Jürgen Schönig',
+ publish_year: 2016,
+ price: 90000,
+ image: 'mastering-postgresql-10.png'
+ },
+ {
+ id: 102,
+ title: 'Python Programming Blueprints',
+ description: 'How to build useful, real-world
+applications in the Python programming language',
+ authors: 'Daniel Furtado, Marcus Pennington',
+ publish_year: 2017,
+ price: 75000,
+ image: 'python-programming-blueprints.png'
+ },
+ ]
+ }
+})
+```
+Properti data books berbentuk array dari objek, silakan merujuk kembali ke bab yang membahas tentang List.
+Kemudian pada template utama, kita akan gunakan v-for untuk merender data books di atas, sebagai berikut.
+ ```javascript
+ <div id="app">
+ <book
+ v-for="book in books"
+ :key="book.id"
+ :title="book.title"
+ :description="book.description"
+ :image = "book.image"
+ >
+ </book>
+</div>
+```
+Sebagaimana penjelasan sebelumnya, maka semua atribut untuk props kita perlu tambahkan directive v-bind
+atau disingkat : karena nilainya dinamis mengikuti objek book pada v-for.
+ 
+Supaya kode lebih rapi dan mudah dibaca, tentunya kita bisa saja mengubah tipe data yang kita kirimkan ke
+component melalui props, di mana sebelumnya teks biasa menjadi objek buku.
+```javascript
+var BookComponent = {
+ data () {
+ return {
+ classCard: 'card'
+ }
+ },
+ props: [ 'book' ],
+ template : `
+ <div :class="classCard">
+ <h3>{{ book.title }}</h3>
+ <img :src="'images/books/'+book.image" style="width:100%">
+ <p v-html="book.description"></p>
+ </div>
+ `
+}
+```
+Karenya, sekarang kode template utamanya cukup seperti berikut
+```javascript
+<div id="app">
+ <book
+ v-for="book in books"
+ :key="book.id"
+ :book="book"
+ >
+ </book>
+</div>
+```
+ 
+### Content Distribution with Slots
+Pada bagian terdahulu tentang mengirimkan data ke Component, telah dibahas mengenai cara mengirimkan
+data ke component dengan menggunakan props, nah pada bagian ini kita akan belajar mengirimkan konten
+ke dalam component.
+```javascript
+Vue.component('information', {
+ template: `
+ <div class="card">
+ <strong>Informasi</strong>
+ </div>`
+})
+```
+
+Sehingga untuk mengaksesnya pada template cukup dengan <information></information>, Nah kita
+tidak bisa serta merta menambahkan sesuatu konten di antara tag information tersebut layaknya tag html
+biasa.
+
+Lalu bagaimana kita bisa menambahkan konten di dalam component? caranya, kita harus deklarasikan
+menggunakan elemen slot.
+```javascript
+Vue.component('information', {
+ template: `
+ <div class="card">
+ <strong>Informasi</strong>
+ <hr>
+ <slot></slot>
+ </div>
+ `
+})
+```
