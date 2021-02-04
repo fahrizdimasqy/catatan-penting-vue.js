@@ -1091,3 +1091,72 @@ Vue.component('information', {
  `
 })
 ```
+Kemudian component tersebut dapat kita panggil sebagai berikut.
+```javascript
+<div id="app">
+ <information>
+ <p>Hati-hati lantai licin!</p>
+ </information>
+</div>
+```
+Nah, pada contoh di atas, elemen <slot></slot> akan di-replace dengan konten <p>Hati-hati
+lantai licin!</p>
+
+### Fallback Slots
+Kita juga diizinkan memberikan konten default untuk suatu slot yang tidak diset di parent, caranya dengan
+menambahkan konten di dalam tag slot.
+```javascript
+<div class="card">
+ <strong>Informasi</strong>
+ <hr>
+ <slot>Tanpa informasi</slot>
+</div>
+```
+
+Sehingga jika component ini dipanggil menyertakan kontent dari slot misalnya:
+```javascript
+<information></information>
+```
+Maka ketika dirender akan menampilkan konten Tanpa informasi
+Sedangkan jika kita definisikan konten slotnya sebagai berikut:
+```javascript
+<information>
+ <p>Hati-hati lantai licin!</p>
+</information>
+```
+Maka ketika dirender akan menampilkan konten <p>Hati-hati lantai licin!</p>
+### Penamaan Slot
+Bagaimana jika konten yang akan kita kirimkan lebih dari satu bagian? misal pada component information
+kita memiliki dua bagian konten di mana bagian pertama berisi konten judul dari informasi dan konten kedua
+berisi isi dari informasi, kodenya sebagai berikut
+```javascript
+div class="card">
+ <slot>Judul Informasi</strong>
+ <hr>
+ <slot>Isi Informasi</slot>
+</div>
+```
+a Vue mempunyai cara untuk mendefinisikan masing-masing
+konten slot tersebut yaitu dengan memberikan atribut name pada tag slot.
+```javascript
+<div class="card">
+ <slot name="judul"></strong>
+ <hr>
+ <slot name="isi"></slot>
+</div>
+```
+Sehingga kode componentnya menjadi
+```javascript
+Vue.component('information', {
+ template: `
+ <div class="card">
+ <slot name="judul"></strong>
+ <hr>
+ <slot name="isi"></slot>
+ </div>
+ `
+})
+```
+Lalu bagaimana cara mendefinisikan konten masing-masing slot component tersebut pada template utama?
+Kita bisa melakukannya dengan menggunakan elemen template dengan attribut v-slot yang bernilai nama
+dari slot yang dituju
