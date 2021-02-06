@@ -1160,3 +1160,74 @@ Vue.component('information', {
 Lalu bagaimana cara mendefinisikan konten masing-masing slot component tersebut pada template utama?
 Kita bisa melakukannya dengan menggunakan elemen template dengan attribut v-slot yang bernilai nama
 dari slot yang dituju
+
+### Dynamic Components
+Ide dari dynamic component ini adalah kita bisa memuat (meload) suatu component yang sudah diregister
+secara dinamis, atau hanya akan kita muat jika kita perlukan saja.
+Misalnya kita memiliki dua component yaitu list dan detail.
+
+Nah, kita bisa memuat component secara dinamis dengan menggunakan elemen <component>, elemen ini
+memiliki directive v-bind:is atau :is untuk memantau pergantian component yang dimuat.
+  
+```javascript
+<component :is="currentComponent"></component>
+```
+Baik, untuk mensimulasikannya mari kita edit kode kita pada objek Vue, tambahkan variabel
+currentComponent, seperti berikut ini.
+```javascript
+ var list = {
+            template: `
+                <div class="card">
+                    <strong>Bahasa Pemrograman</strong>
+                    <ul>
+                        <li>Javascript</li>
+                        <li>PHP</li>
+                        <li>Java</li>
+                    </ul>
+                </div>
+                `
+        }
+        var detail = {
+            template: `
+                    <div class="card">
+                        <strong>PHP</strong>
+                        <p> PHP adalah singkatan dari PHP Hypertext Preprocessor. </p>
+                    </div>
+        `
+        }
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                currentComponent: 'list'
+            },
+            components: {
+                'list': list,
+                'detail': detail,
+            },
+        })
+```
+Lalu pada template ubah menjadi.
+
+```javascript
+<div id="app">
+        <button @click="currentComponent = 'list'">List</button>
+        <button @click="currentComponent = 'detail'">Detail</button>
+        <hr>
+        <component :is="currentComponent"></component>
+</div>
+```
+### Transition Effect
+Vue menyediakan cara yang sederhana untuk memberikan efek animasi transisi. Pada bagian sebelumnya
+yaitu dynamic component, kita dapat menambahkan efek animasi atas pergantian component supaya
+pergantiannya terasa lembut dan menarik.
+Caranya dengan menggunakan elemen <transition>. Ubah template menjadi sebagai berikut
+```javascript
+   <div id="app">
+        <button @click="currentComponent = 'list'">List</button>
+        <button @click="currentComponent = 'detail'">Detail</button>
+        <hr>
+        <transition name="fade" mode="out-in">
+            <component :is="currentComponent"></component>
+        </transition>
+    </div>
+```
