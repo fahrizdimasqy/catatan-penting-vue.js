@@ -954,6 +954,37 @@ masing-masing props, sebagai berikut.
  </book>
 </div>
 ```
+
+### Global Component
+```javascript
+Vue.component('my-component-name', {/* ... */})
+```
+```javascript
+Vue.component('component-a', {
+ template: `<p>Component A</p>`
+})
+Vue.component('component-b', {
+ template: `<p>Component B</p>`
+ })
+Vue.component('component-c', {
+ template: `<p>Component C</p>`
+})
+new Vue({ el: '#app1' })
+new Vue({ el: '#app2' })
+ ```
+### Local Component
+```javascript
+var ComponentA = {
+ template: `<p>Component A</p>`
+}
+new Vue({
+ el: '#app',
+ components: {
+ 'component-a': ComponentA,
+ 'component-b': ComponentB,
+ 'component-c': ComponentC
+ }
+})
 ### Directive Pada Component
 Component pada Vue bisa diibaratkan sebagai elemen HTML di mana ada atribut berupa directive yang bisa
 diaplikasikan padanya. Sebagai contoh, kita akan menampilkan data dalam bentuk list menggunakan elemen
@@ -1269,3 +1300,73 @@ Defini tersebut jika digunakan pada Vue objek seperti berikut
 ```
 Properti created dan methods pada mixins melebur ke dalam objek Vue, sehingga objek Vue memiliki
 behavior yang sama dengan mixinnya
+```javascript
+// inject a handler for `text` custom option
+Vue.mixin({
+ created: function () {
+ let text = this.$options.text
+ if (text) {
+ console.log(text)
+ }
+ }
+})
+new Vue({
+ text: 'hello!'
+})
+// => "hello!"
+```
+### Plugins
+Plugins biasanya digunakan sebagai wrapper untuk menambahkan atau mendaftarkan suatu fitur global pada
+Vue, misalnya plugin untuk menambahkan:
+global methods atau properties. contoh: vue-custom-element
+global assets: directives/filters/transitions. contoh: vue-touch
+component options menggunakan global mixin. contoh: vue-router
+
+methods untuk objek Vue melalu Vue.prototype.
+### Deklarasi Plugins 
+```javascript
+MyPlugin.install = function (Vue, options) {
+ // 1. add global method or property
+ Vue.myGlobalMethod = function () {
+ // something logic ...
+ }
+ // 2. add a global asset
+ Vue.directive('my-directive', {
+ bind (el, binding, vnode, oldVnode) {
+ // something logic ...
+ }
+ ...
+ })
+ // 3. inject some component options
+ Vue.mixin({
+ created: function () {
+ // something logic ...
+ }
+ ...
+ })
+ // 4. add an instance method
+ Vue.prototype.$myMethod = function (methodOptions) {
+ // something logic ...
+ }
+}
+```
+### Menggunakan Plugin
+Suatu plugin digunakan melalui method Vue.use():
+```javascript
+// calls `MyPlugin.install(Vue)`
+Vue.use(MyPlugin)
+// atau jika ada options
+Vue.use(MyPlugin, { someOption: true })
+```
+> Catatan: Kode Vue.use secara otomatis mencegah duplikasi plugin.
+
+## Routing
+### Features
+* Vue Router memiliki beberapa fitur diantaranya:
+* Route/view bertingkat
+Modular, konfigurasinya berbasis component
+Mendukung params, query, wildcards pada route
+Mendukung efek transisi saat perpindahan halaman / route
+Menangani pengontrolan akses dengan baik
+Link routenya otomatis terhubung dengan CSS class active.
+Mendukung HTML5 history mode atau hash m
