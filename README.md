@@ -1240,3 +1240,32 @@ fade-enter-active, .fade-leave-active {
  opacity: 0;
 }
 ```
+### Mixins
+Mixins (bukan micin) merupakan cara pada Vue untuk mendefinisikan suatu kumpulan fungsi atau option
+yang akan digunakan pada aplikasi atau component tertentu. Ketika objek Vue atau component
+menggunakan mixins maka semua option dari mixin tersebut akan di digabungkan ke dalam component yang
+menggunakannya tersebut.
+
+```javascript
+        var MixinHello = {
+            created: function () {
+                this.hello()
+            },
+            methods: {
+                hello: function () {
+                    console.log('hello from mixin!')
+                }
+            }
+        }
+```
+Defini tersebut jika digunakan pada Vue objek seperti berikut
+```javascript
+        var vm = new Vue({
+            el: '#app',
+            mixins: [
+                MixinHello
+            ]
+        })
+```
+Properti created dan methods pada mixins melebur ke dalam objek Vue, sehingga objek Vue memiliki
+behavior yang sama dengan mixinnya
