@@ -1231,3 +1231,12 @@ Caranya dengan menggunakan elemen <transition>. Ubah template menjadi sebagai be
         </transition>
     </div>
 ```
+Kemudian tambahkan style css berikut.
+```css
+fade-enter-active, .fade-leave-active {
+ transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+ opacity: 0;
+}
+```
