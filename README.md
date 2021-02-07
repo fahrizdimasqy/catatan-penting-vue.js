@@ -1364,9 +1364,288 @@ Vue.use(MyPlugin, { someOption: true })
 ### Features
 * Vue Router memiliki beberapa fitur diantaranya:
 * Route/view bertingkat
-Modular, konfigurasinya berbasis component
-Mendukung params, query, wildcards pada route
-Mendukung efek transisi saat perpindahan halaman / route
-Menangani pengontrolan akses dengan baik
-Link routenya otomatis terhubung dengan CSS class active.
-Mendukung HTML5 history mode atau hash m
+* Modular, konfigurasinya berbasis component
+* Mendukung params, query, wildcards pada route
+* Mendukung efek transisi saat perpindahan halaman / route
+* Menangani pengontrolan akses dengan baik
+* Link routenya otomatis terhubung dengan CSS class active.
+* Mendukung HTML5 history mode atau hash mode, dengan auto-fallback di IE9
+* Mendukung fitur scroll dan kustomisasinya
+
+untuk bekerja dengan Vue Router, ada dua component penting yang akan kita gunakan yaitu router-link
+dan router-view. router-link berfungsi menggenerate menu link, sedangkan router-view berfungsi
+sebagai tempat penampung component yang ditampilkan. Disamping kita kita perlu mendeklarasikan class
+VueRouter dan mendefiniskan routing aplikasi kita
+```javascript
+ <div id="app">
+        <p>
+            <router-link to="/">Home</router-link>
+            <router-link to="/about">About</router-link>
+        </p>
+        <router-view></router-view>
+    </div>
+
+    <script>
+        const Home = {
+            template: '<div>Halaman Home</div>'
+        }
+        const About = {
+            template: '<div>Halaman About</div>'
+        }
+        // mapping route path dengan componentnya, dibaca dari atas ke bawah
+        const routes = [{
+                path: '/',
+                component: Home,
+                alias: '/home'
+            },
+            {
+                path: '/about',
+                component: About
+            },
+            {
+                path: '*',
+                redirect: '/'
+            }
+        ]
+        // register routing aplikasi kita pada objek dari class VueRouter
+        const router = new VueRouter({
+            routes // bentuk pendek dari `routes: routes`
+        })
+        var vm = new Vue({
+            el: '#app',
+            router,
+        })
+    </script>
+```
+Jika hal itu terjadi maka tidak akan ada component yang dimuat karena tidak ada path dalam mapping yang
+sesuai. Untuk mengatasi hal ini, maka kita perlu menghandle URL apapun dan meredirectnya ke URL / jika
+tidak ada yang sesuai. Gunakan path * yang akan sesuai dengan url apapun
+```javascript
+const routes = [
+ { path: '/', component: Home, alias: '/home' },
+ { path: '/about', component: About },
+ { path: '*', redirect: '/' }
+]
+```
+Jadi ketika kita mengakses URL /contact-us maka Vue Router akan meredirect ke URL /.
+Dengan menggunakan Vue Router ini maka seluruh routing yang pernah kita klik akan tersimpan di-history
+browser sehingga ketika user mengklik button back, URL akan sesuai dengan routing yang terakhir kali
+diakses.
+
+### Dynamic Routing
+```javascript
+{ path: '/book/:id', component: Book }
+```
+Parameter yang diawali dengan : tersebut (atau dalam hal ini :id) kemudian pada objek Vue atau pada
+component Book dapat diakses dengan perintah this.$route.params.nama_parameternya atau dalam
+hal ini this.$route.params.id.
+### Membuat BooksComponent
+Component ini berfungsi menampilkan daftar buku. Supaya lebih rapi pada tutorial ini deklarasi component
+buku akan letakkan pada file terpisah.
+Buat file BooksComponent.js
+```javascript
+export const BooksComponent = {
+ data () {
+ return {
+ books: [
+ {
+ id: 99,
+ title: 'C++ High Performance'
+ },
+ {
+ id: 100,
+ title: 'Mastering Linux Security and Hardening'
+ },
+ {
+ id: 101,
+ title: 'Mastering PostgreSQL 10'
+ },
+ {
+ id: 102,
+ title: 'Python Programming Blueprints'
+ },
+ ]
+ }
+ },
+ template: `
+ <div>
+ <h1>Daftar Buku</h1>
+ <ul>
+ <li v-for="book of books">
+ <router-link :to="'/book/'+book.id">
+ {{ book.title }} 
+ </router-link>
+ </li>
+ </ul>
+ </div>
+ `
+}
+```
+Component ini akan menampilkan daftar judul buku menggunakan directive perulangan v-for, di mana pada
+setiap itemnya akan ditampilkan router-link yang URL pathnya memiliki format /book/BOOK_ID
+Pada file utama index.html, import component BooksComponent sebagai berikut:
+```javascript
+<script type="module">
+import { BooksComponent } from './BooksComponent.js'
+```
+Selanjutnya, mari kita daftarkan component ini pada mapping routing yang telah kita sebelumnya
+```javascript
+const routes = [
+ { path: '/', component: Home, alias: '/home' },
+ { path: '/about', component: About },
+ { path: '/books', component: BooksComponent },
+ { path: '*', redirect: '/' }
+]
+```
+Kemudian, tentu saja pada template kita tambahkan router-link untuk mengakses component ini.
+```
+<div id="app">
+ <router-link to="/">Home</router-link>
+ <router-link to="/about">About</router-link>
+ <router-link to="/books">Books</router-link>
+ <hr>
+ <router-view></router-view>
+</div>
+```
+Jika kita klik salah satu link misalnya buku berjudul Mastering PostgreSQL 10 dengan link
+http://localhost/book-laravue/routing/index.html#/book/101 maka akan diredirect ke
+component Home, karena path book tidak sesuai dengan salah satu dari daftar mapping routing.
+### Membuat BookComponent
+Setelah membuat BooksComponent yang berfungsi menampilkan link daftar judul buku. Maka selanjutkan
+kita perlu membuat satu component lagi untuk menampilkan data detail buku sesuai dengan buku yang dipilih
+pada BooksComponent.
+```javascript
+export const BookComponent = {
+  data() {
+    return {
+      books: [
+        {
+          id: 99,
+          title: "C++ High Performance",
+          description:
+            "Write code that scales across CPU registers, multi-core, and machine clusters",
+          authors: "Viktor Sehr, Björn Andrist",
+          publish_year: 2018,
+          price: 100000,
+          image: "c++-high-performance.png",
+        },
+        {
+          id: 100,
+          title: "Mastering Linux Security and Hardening",
+          description:
+            "A comprehensive guide to mastering the art of preventing your Linux system from getting compromised",
+          authors: "Donald A. Tevault",
+          publish_year: 2018,
+          price: 125000,
+          image: "mastering-linux-security-and-hardening.png",
+        },
+        {
+          id: 101,
+          title: "Mastering PostgreSQL 10",
+          description:
+            "Master the capabilities of PostgreSQL 10 to efficiently manage and maintain your database",
+          authors: "Hans-Jürgen Schönig",
+          publish_year: 2016,
+          price: 90000,
+          image: "mastering-postgresql-10.png",
+        },
+        {
+          id: 102,
+          title: "Python Programming Blueprints",
+          description:
+            "How to build useful, real-world applications in the Python programming language",
+          authors: "Daniel Furtado, Marcus Pennington",
+          publish_year: 2017,
+          price: 75000,
+          image: "python-programming-blueprints.png",
+        },
+      ],
+    };
+  },
+  computed: {
+    book() {
+      return this.books.filter((book) => {
+        return book.id === parseInt(this.$route.params.id);
+      })[0];
+    },
+  },
+  template: `
+        <div v-if="book">
+            <h1>Buku {{ book.title }}</h1>
+            <ul>
+                 <li v-for="(num, value) of book">
+                 {{ num +' : '+ value }} <br>
+                 </li>
+         </ul>
+        </div>
+        `,
+};
+```
+Pada kode di atas, tepatnya properti computed, data books yang berformat list difilter dengan cara
+membandingkan id buku book.id dan parameter id yang dilewatkan melalui URL
+this.$route.params.id.
+Pada file utama index.html, import component BookComponent,
+```javascript
+import { BookComponent } from './BookComponent.js'
+```
+Daftarkan component ini pada mapping routing.
+```javascript
+const routes = [
+ { path: '/', component: Home, alias: '/home' },
+ { path: '/about', component: About },
+ { path: '/books', component: BooksComponent },
+ { path: '/book/:id', component: BookComponent },
+ { path: '*', redirect: '/' }
+]
+```
+Perhatikan path book/:id, ini adalah path dinamis dimana parameter id bersifat dinamis sesuai dengan
+link pada router-linknya. Nah, untuk mengaksesnya kita bisa gunakan kode this.$route.params.id.
+Nama parameternya bebas, tidak harus id untuk data id. Artinya pada contoh di atas, boleh saja kita ganti
+dengan path book/:kode, maka untuk mengakses parameternya menjadi this.$route.params.kode.
+
+### Programmatic Navigation
+Disamping menggunakan element router-link yang menampilkan link untuk menuju ke path tertentu, kita juga
+dapat menjalankan method dari objek Vue Router untuk meredirect halaman ke path tertentu.
+Method tersebut adalah method push()
+```javascript
+router.push( /* location */ )
+// jika di dalam objek Vue atau component, tambahkan this.$
+this.$router.push( /* location */ )
+```
+Berikut ini contoh variasi pemanggilan method ini:
+```javascript
+// literal string path
+router.push('/home')
+// object
+router.push({ path: '/home' })
+// named route /user/123
+router.push({ name: 'user', params: { userId: 123 }})
+// with query, resulting in /register?plan=private
+router.push({ path: 'register', query: { plan: 'private' }})
+```
+Kita juga bisa mengakses history URL dengan menggunakan method go.
+```javascript
+router.go(1)
+```
+### Penamaan Routing
+Untuk mengidentifikasi suatu route kita bisa menggunakan nama, dibanding menggunakan path-nya.
+Tambahkan key name pada mapping route
+```javascript
+const routes = [
+ { path: '/', component: Home, alias: '/home' },
+ { path: '/about', component: About },
+ { path: '/books', component: BooksComponent },
+ { path: '/book/:id', name: 'book', component: BookComponent },
+ { path: '*', redirect: '/' }
+]
+```
+Untuk membuat link ke route tersebut kita bisa gunakan kode berikut:
+```javascript
+<router-link :to="{ name: 'book', params: { bookId: 123 }}">Mastering
+Vue</router-link>
+```
+Atau jika menggunakan method push kita bisa gunakan kode berikut
+```javascript
+router.push({ name: 'book', params: { bookId: 123 }})
+```
+### Mengirimkan Props ke Component Routing 
