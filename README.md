@@ -1649,3 +1649,109 @@ Atau jika menggunakan method push kita bisa gunakan kode berikut
 router.push({ name: 'book', params: { bookId: 123 }})
 ```
 ### Mengirimkan Props ke Component Routing 
+### Navigation Guards
+Vue Router memungkinkan kita menolak atau mengizinkan akses ke suatu route. Misalkan ada halaman
+yang hanya boleh diakses ketika user sudah login.
+Setiap fungsi guard mempunyai tiga argumen:
+* to: Route: target route (path) di mana halaman akan diredirect.
+* from: Route: current route asal.
+* next: Function: fungsi ini hasrus dipanggil untuk menyelesaikan hook. Aksinya tergantung pada argumen
+yang dilewatkan via next.
+next(): navigasi akan dilanjutkan.
+next(false): navigasi akan dibatalkan.
+next('/') or next({ path: '/' }): redirect ke route lain.
+next(error): (2.4.0+) navigasi akan dibatalkan dan error akan dikirimkan ke callbacks via
+router.onError().
+Ada tiga cara untuk mendefinisikan navigation guards, yaitu: secara global, per-route, atau dalam component.
+### Global
+```javascript
+const router = new VueRouter({ ... })
+// Guard yang diimplementasikan disini akan dijalankan sebelum route
+dituju
+router.beforeEach((to, from, next) => {
+ // ...
+})
+// akan dijalankan setelah route dituju tapi guard disini tidak akan
+berefek pada routing
+router.afterEach((to, from) => {
+ // ...
+})
+```
+### Per Route
+```javascript
+routes: [
+ {
+ path: '/home',
+ component: Home,
+ beforeEnter: (to, from, next) => {
+ // ...
+ }
+ },
+  // ...
+]
+ ```
+ ### Dalam Component
+ ```javascript
+ const Home = {
+ template: `...`,
+ beforeRouteEnter (to, from, next) {
+ // dipanggil sebelum route dituju & sebelum component yang dituju itu
+dibuat
+ // sehingga kita tidak bisa mengakses `this` component
+ },
+ beforeRouteUpdate (to, from, next) {
+ // dipanggil ketika route yang merender component diubah, `this` bisa
+diakses
+ },
+ beforeRouteLeave (to, from, next) {
+ // dipanggil ketika akan meninggalkan current route
+ }
+}
+```
+### Prevent Leave Accident
+contoh penggunaan navigation guard ini untuk hal yang simple yatu untuk
+mencegah pengguna keluar dari suatu halaman hanya karena salah klik (tidak sengaja).
+Nah, pada contoh ini kita akan menampilkan pesan konfirmasi untuk memastikan bahwa pengguna memang
+benar-benar ingin keluar atau berpindah dari halaman tersebut.
+Kita akan mencoba melalui deklarasi dalam component menggunakan hook beforeRouteLeave.
+```javascript
+beforeRouteLeave(to, from, next) {
+    const answer = window.confirm("apakah yakin akan keluar");
+    if (answer) {
+      next();
+    } else {
+      next(false);
+    }
+  },
+};
+```
+### Authentication Route
+Contoh implementasi lain dari navigation guards, adalah kita bisa mencegah user yang tidak memiliki hak
+akses untuk mengakses suatu route / halaman tertentu.
+Untuk melakukan hal itu, pertama kali kita perlu definisikan pada mapping route, mana saja route yang hanya
+boleh diakses oleh misalnya user yang sudah login. Vue Router telah menyediakan key meta yang bisa kita
+manfaatkan sebagai penanda routing.
+Misalnya, route atau halaman about hanya boleh diakses oleh user yang sudah login, maka kita tambahkan
+saja meta login yang bernilai true (bebas saja nama metanya).
+```javascript
+const routes = [
+ { path: '/', component: Home, alias: '/home' },
+ { path: '/about', component: About, meta: { login: true } },
+ { path: '/books', component: BooksComponent },
+ { path: '/book/:id', name: 'book', component: BookComponent, props:
+true },
+ { path: '*', redirect: '/' }
+]
+```
+Kemudian navigation guard bisa kita definisikan secara global.
+```javascript
+router.beforeEach((to, from, next) => {
+ if (to.matched.some(record => record.meta.login)) {
+ alert('Halaman ini hanya untuk user yang sudah login!')
+ next(false)
+ }
+ else{
+ next()
+ }
+})
+```
