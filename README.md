@@ -1755,3 +1755,33 @@ router.beforeEach((to, from, next) => {
  }
 })
 ```
+### State Management
+State management merupakan sentralisasi variabel data, sehingga semua component dalam aplikasi dapat
+mengakses dan memanipulasinya dengan aturan-aturan tertentu sehingga perubahannya dapat diprediksi.
+Untuk memahami state management, berikut ini contoh aplikasi counter sederhana berbasis Vue.
+```javascript
+new Vue({
+ el: '#app',
+ // state
+ data: {
+ counter: 0
+ },
+ // view
+ template: `
+ <div>
+ {{ counter }}
+ <button @click="increment()"> + </button>
+ </div>
+ `,
+ // actions
+ methods: {
+ increment () {
+ this.counter++
+ }
+ }
+})
+```
+Kode pada aplikasi counter di atas memiliki tiga bagian utama.
+* State, atau data yang dijadikan sebagai sumber utama yang digunakan oleh aplikasi;
+* View, deklarasi mapping dari state, di mana dan bagaimana state akan ditampilkan;
+* Actions, jalan untuk mengubah state ketika user melakukan tindakan pada view
