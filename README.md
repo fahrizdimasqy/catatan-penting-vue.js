@@ -1785,3 +1785,91 @@ Kode pada aplikasi counter di atas memiliki tiga bagian utama.
 * State, atau data yang dijadikan sebagai sumber utama yang digunakan oleh aplikasi;
 * View, deklarasi mapping dari state, di mana dan bagaimana state akan ditampilkan;
 * Actions, jalan untuk mengubah state ketika user melakukan tindakan pada view
+Pustaka Vuex menangani dan terdiri dari 3 hal utama yaitu state, mutation dan action. Cara kerja Vuex
+adalah:
+* Mula-mula suatu component melakukan dispatch (pemanggilan) kepada suatu fungsi pada actions;
+* Actions yang berisi kumpulan fungsi tersebut bertugas memanggil fungsi pada mutation;
+* Fungsi-fungsi pada mutation bertugas mengupdate state.
+* Perubahan pada state yang bersifat reaktif akan memicu rendering component.
+
+State atau data pada Vuex disimpan dalam sebuah objek yang disebut dengan store. Tidak hanya
+menyimpan state, namun store juga bertanggung jawab atas perubahan state, dan perubahannya tersebut
+bersifat reaktif sehingga bisa digunakan untuk memicu render ulang suatu View yang menggunakan state.
+
+Pertama, kita perlu tau dulu bahwa state atau data apa saja yang digunakan pada aplikasi counter? dan
+bagaimana perubahan (mutation) state-nya?
+Pada kasus ini, tentu saja state yang terlibat adalah data counter dan perubahannya adalah increment
+dari state.
+Kedua, kita buat objek Vuex store berdasarkan poin pertama di mana ada dua properti yang akan kita
+gunakan yaitu state dan mutation.
+```javascript
+const store = new Vuex.Store({
+ state: {
+ counter: 0
+ },
+ mutations: {
+ increment(state){
+ state.counter++
+ }
+ }
+})
+```
+
+Yap, analogi kode di atas mirip dengan data & method pada objek Vue.
+Pada kode store di atas, kita bisa melakukan perubahan data counter melalui fungsi increment, caranya
+dengan meng-commit mutation increment store.commit('increment'). Adapun untuk mengakses data
+state counter, kita bisa gunakan perintah store.state.counter.
+
+Pada konsep Vuex, perubahan state sebaiknya hanya dilakukan oleh mutations supaya lebih mudah dalam
+tracking perubahan state. Meskipun perubahan state diluar mutation tetap bisa dilakukan, misalnya dengan
+perintah store.state.counter++ namun hal ini melanggar pattern Vuex dan akan menyulitkan kita
+sendiri ketika aplikasi kita telah kompleks.
+Jika kita aktifkan mode strict pada Vuex, maka perubahan state diluar mutation akan menimbulkan pesan
+warning pada console browser, tambahkan properti strict: true pada store.
+
+### Mengakses Store Via Componen
+buat component baru misalnya bernama Hello yang berfungsi menampilkan state
+counter (nama filenya: Hello.js)
+```javascript
+export const Hello = {
+ template: `
+ <p>
+ State counter pada hello :
+ {{ counter }}
+ </p>
+ `,
+ computed: {
+ counter(){
+ return store.state.counter
+ }
+ }
+}
+```
+Kemudian pada file utama, kita import component ini
+```javascript
+<script type="module">
+import { Hello } from "./Hello.js"
+```
+Lalu pada objek Vue, registerkan component Hello serta ubah properti template dengan menambahkan
+elemen <hello>, adapun kode lainnya masih tetap sama
+```javascript
+   new Vue({
+ el: '#app',
+ components: {
+ 'hello': Hello
+ },
+
+ // view
+ template: `
+ <div>
+ {{ counter }}
+ <button @click="increment()"> + </button>
+ <hello></hello>
+ </div>
+ `,
+})
+</script>
+```
+
+Hasilnya akan muncul error yang menyebutkan bahwa varaibel store tidak didefinisikan di dalam component
+Hello.
