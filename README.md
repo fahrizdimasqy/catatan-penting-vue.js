@@ -1873,3 +1873,425 @@ elemen <hello>, adapun kode lainnya masih tetap sama
 
 Hasilnya akan muncul error yang menyebutkan bahwa varaibel store tidak didefinisikan di dalam component
 Hello.
+
+Adapun perubahan state pada devtools tetap tercatat karena perintah commit state dilakukan di objek Vue
+bukan di component Hello
+Untuk mengatasi hal ini, Vuex menyediakan mekanisme untuk menginjek atau meregister Vuex store pada
+objek Vue sehingga bisa digunakan pada seluruh component dibawah objek Vue tersebut. Hal ini sebenarnya
+hampir sama dengan register component secara 
+```javascript
+new Vue({
+ el: '#app',
+ store, // tambahkan ini atau store: store
+ components: {
+ 'hello': Hello
+ },
+ ...
+})
+````
+Kemudian pada component, kita bisa gunakan perintah this.$store untuk mengakses store
+```javascript
+export const Hello = {
+  template: `
+    <p>
+    State counter pada hello :
+    {{ counter }}
+    </p>
+    `,
+  computed: {
+    counter() {
+      return this.$store.state.counter;
+    },
+  },
+};
+```
+
+### Getters
+Vuex store sebenarnya juga memiliki properti getters sehingga pemanggilan state tidak langsung menembak
+state-nya (store.state.counter) melainkan melalui perantaraan fungsi getter di store tersebut
+```javascript
+ const store = new Vuex.Store({
+            state: {
+                counter: 0
+            },
+            mutations: {
+                increment(state) {
+                    state.counter++;
+                }
+            },
+            getters: {
+                counter : state => state.counter
+            }
+        })
+```
+Untuk memanggilnya pada computed, kita bisa menggunakan perintah store.getters.counter, Oleh
+karenanya kita bisa ubah cara pemanggilannya pada properti computed
+```javascript
+ computed: {
+              counter() {
+                return store.getters.counter
+              }
+            },
+```
+Bukankah sama saja atau bahkan overkoding kalo kita menggunakan getters? Ya ini supaya kode Vuex kita
+lebih terstruktur saja, di samping itu kadangkala implementasi getters ini tidak hanya mereturn satu state saja
+melainkan beberapa state sekaligus dan bisa juga ditambahkan dengan operasi tertentu sehingga akan lebih
+efisien jika kita buatkan fungsi getters sendiri.
+### Mutations 
+Mutations merupakan kumpulan fungsi untuk memanipulasi state atau bisa juga disebut sebagai setter. Tiap
+fungsi mutations memiliki minimal dua hal yaitu type dan handler, di mana type merupakan nama fungsinya
+dan handler merupakan state
+```javascript
+increment (state) {
+ state.counter++
+}
+// atau versi es6 arrow function
+increment: state => state.counter++
+// untuk mengakses
+store.commit('increment')
+```
+Kita juga dizinkan menambahkan argumen (payload) pada fungsi ini.
+```javascript
+increment (state, n) {
+ state.counter += n
+}
+// untuk mengaksesnya
+store.commit('increment', 10)
+```
+
+> Catatan: fungsi dalam mutation seharusnya bersifat synchronous supaya mudah dalam memantau
+perubahan state
+Berikut ini contoh simulasi asynchronous fungsi setName dengan menggunakan setTimeout.
+```javascript
+mutations: {
+ //increment: state => state.counter++
+ increment(state) {
+ setTimeout(()=>{
+ state.counter++
+ }, 1000)
+ }
+},
+```
+Hasilnya akan muncul error dan state tidak berubah.
+Artinya, perubahan state pada mutation harus dilakukan pada saat itu juga, tidak boleh menunggu barang
+satu detik pun
+
+### Actions 
+Vuex juga memiliki properti actions. Actions sebenarnya mirip dengan mutations, namun perbedaanya
+adalah:
+* Actions bertugas meng-commit mutations.
+* Actions mendukung operasi asynchronous.
+```javascript
+var store = new Vuex.Store({
+ strict: true,
+ state: {
+ counter: 0
+ },
+ mutations: {
+ increment: state => state.counter++
+ },
+ actions: {
+ increment(context){
+ context.commit('increment')
+ }
+ // atau
+ /*
+ increment: (context) => {
+ context.commit('increment')
+ }
+ atau
+ increment: ({commit}) => {
+ commit('increment')
+ }
+ */
+ },
+ getters: {
+ counter: state => state.counter
+ }
+})
+```
+Lalu cara memanggilnya pada objek Vue atau component, yang sebelumnya menggunakan perintah
+store.commit('increment') maka kita ubah menjadi store.dispatch('increment').
+```javascript
+new Vue({
+ el: '#app',
+ store,
+ components: {
+ 'hello': Hello
+ },
+ computed: {
+ counter(){
+ return store.getters.counter
+ }
+ },
+ // view
+ template: `
+ <div>
+ {{ counter }}
+ <button @click="increment()"> + </button>
+ <hello></hello>
+ </div>
+ `,
+ methods: {
+ increment () {
+ // store.commit('increment')
+ store.dispatch('increment')
+ },
+ },
+})
+```
+### Asynchronous Actions 
+Berbeda dengan mutation, fungsi-fungsi pada actions bisa dibuat asynchronous, misalnya pada kasus
+pemanggilan data dari server yang tentu membutuhkan waktu. Caranya, kita menggunakan Promise sebagai
+return value dari fungsi pada actions.
+Wah, apa itu promise? promise artinya janji, ini sebuah term di JS yang memungkinkan kita menunggu suatu
+proses yang dilakukan secara asynchronous dan kita dipastikan akan mendapatkan feedback balik dari
+proses itu, baik berhasil maupun gagal.
+```javascript
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../lib/vue.js"></script>
+    <script src="../lib/vue-router.js"></script>
+    <script src="../lib/vuex.js"></script>
+    <title>Document</title>
+</head>
+<style>
+    .fade-enter-active,
+    .fade-leave-active {
+        transition: opacity .5s;
+    }
+
+    .fade-enter,
+    .fade-leave-to {
+        opacity: 0;
+    }
+</style>
+
+<body>
+
+    <!-- <div id="app">
+    </div> -->
+    <div id="app">
+
+    </div>
+
+    <script>
+        // import {Hello} from "./Hello.js"
+        var store = new Vuex.Store({
+            strict: true,
+            state: {
+                books: []
+            },
+            mutations: {
+                // increment(state) {
+                //     state.counter++;
+                // }
+                setBooks(state, books) {
+                    state.books = books
+                }
+            },
+            getters: {
+                books: state => state.books
+            },
+            actions: {
+                getBooks({
+                    commit
+                }) {
+                    return new Promise((resolve, reject) => {
+                        var xhr = new XMLHttpRequest();
+                        xhr.open("GET", "https://api.jsonbin.io/b/6024042f435c323ba1c4604c");
+                        xhr.onload = function () {
+                            if (this.status >= 200 && this.status < 300) {
+                                commit('setBooks', JSON.parse(xhr.response))
+                                resolve(xhr.response);
+                            } else {
+                                reject({
+                                    status: this.status,
+                                    statusText: xhr.statusText
+                                });
+                            }
+                        };
+                        xhr.onerror = function () {
+                            reject({
+                                status: this.status,
+                                statusText: xhr.statusText
+                            });
+                        };
+                        xhr.send();
+                    })
+                }
+                // increment(context) {
+                //     context.commit('increment')
+                // }
+            },
+
+        })
+
+        new Vue({
+            el: '#app',
+            store,
+            components: {
+                // 'hello': Hello
+            },
+            // view
+            template: `<div id=""> 
+                <ul v-for="book in books">
+            <li>{{ book.title }}</li>
+        </ul>
+                    </div>
+                
+                `,
+
+            // actions
+
+            // methods: {
+            //     increment() {
+            //         // store.commit('increment')
+            //         store.dispatch('increment')
+            //     }
+            // },
+            computed: {
+                books() {
+                    return store.getters.books
+                }
+            },
+            created() {
+                store.dispatch('getBooks')
+                    .then((response) => {
+                        console.log('result:', response)
+                    })
+                    .catch((error) => {
+                        console.log('error: ', error)
+                    })
+            }
+        })
+    </script>
+
+
+</body>
+
+</html>
+```
+Kita siapkan dulu kerangka state books, mutations setBooks, action getBooks dan getters books.
+Kita masih akan menggunakan pustaka XMLHTTP untuk merequest data JSON buku dan kodenya tersebut
+akan kita bungkus menggunakan Promise pada actons getBooks() agar mendukung asynchronous
+
+Kode di atas akan merequest data buku pada jsonbin.io dengan metode GET xhr.open("GET",
+"http://api.jsonbin.io/b/5b42acd44d5ea95c8ba22392");. Kemudian jika permintaan data
+sukses if (this.status >= 200 && this.status < 300) maka data tersebut akan dicommit ke
+mutation setBooks, tentunya karena data berformat JSON maka kita perlu parsing atau konversi ke bentuk
+objek atau array Javascript menggunakan JSON.parse
+```javascript
+commit('setBooks', JSON.parse(xhr.response) )
+resolve(xhr.response);`
+```
+Kemudian pada objek Vue atau component, tepatnya pada hook created kita bisa melakukan dispatch action
+getBooks dan pada computed kita perlu buat fungsi books yang memanggil getters books pada store,
+sebagai berikut.
+```javascript
+new Vue({
+ el: '#app',
+ store,
+ computed: {
+ books(){
+ return store.getters.books
+ }
+ },
+ created() {
+ store.dispatch('getBooks')
+ .then((response) => {
+ console.log('result: ', response)
+ })
+ .catch((error) => {
+ console.log('error: ', error)
+ })
+ }
+})
+```
+Selanjutnya pada template, kita gunakan teknik list rendering.
+```javascript
+<div id="app">
+ <ul v-for="book in books">
+ <li>{{ book.title }}</li>
+ </ul>
+</div>
+```
+### Menangani Two Way Data Binding
+Pada bab sebelumnya kita telah membahas two way data binding dengan menggunakan directive v-model, di
+mana v-model merujuk ke variabel pada properti data. Kita tau bahwa sifat dari v-model itu ada dua yaitu
+getter dan setter, artinya ketika kita mengisi teks pada field input maka variabel data akan diset sesuai
+dengan teks isian kita (setter), sebalik jika variabel data diubah maka isian field input juga akan mengikuti
+perubahan pada variabel data tersebut (getter).
+```javascript
+var store = new Vuex.Store({
+ strict: true, // supaya warning muncul
+ state: {
+ name: 'Hafid'
+ },
+ mutations: {
+ setName: (state, name) => {
+ state.name = name
+ }
+ /*
+ // boleh juga fungsi biasa
+ setName (state, name) {
+ state.name = name
+ }
+ */
+ },
+ getters: {
+ name: state => state.name
+ }
+})
+new Vue({
+ el: '#app',
+ store,
+ computed: {
+ name(){
+ return store.getters.name
+ }
+ },
+ template: `
+ <div>
+ <input v-model='name'>
+ </div>
+ `,
+})
+```
+```javascript
+// ...
+new Vue({
+ el: '#app',
+ computed: {
+ name: {
+ get () {
+ return store.getters.name
+ },
+ set (value) {
+ store.commit('setName', value)
+ }
+ }
+ },
+ template: `
+ <div>
+ <input v-model='name'>
+ </div>
+ `,
+})
+```
+ketika field input kita ketikkan suatu teks ternyata muncul error pada console.
+Intinya properti name tidak memiliki setter. Yap, karena properti computed itu secara default sifatnya hanya
+getter saja.
+Oleh karena itu, kita perlu buat atau definisikan getter dan setter pada computed name, seperti ini bentuknya.
+### Kesimpulan
+State management merupakan manajemen data atau state aplikasi secara terpusat sehingga memudahkan
+sharing data dan manipulasinya antar component dalam aplikasi. Setiap perubahan state hanya boleh
+dilakukan secara langsung oleh mutation, sehingga memudahkan dalam tracking state. Operasi pada
+mutation harus bersifat synchronous, sedangkan operasi pada actions bisa asynchronous menggunakan
+Promise atau async/await.
+Jika mengikuti best practice-nya maka interaksi terhadap state pada suatu component hanya sebatas
+dispatch action dan gettters saja, bukan langsung mengakses state atau mutationnya.
