@@ -345,6 +345,127 @@ and machine clusters',
 {{ index+1 }}. {{ key }} : {{ value }}
 </li>
 ```
+### Content Distribution with Slots ~3
+Pada bagian terdahulu tentang mengirimkan data ke Component, telah dibahas mengenai cara mengirimkan
+data ke component dengan menggunakan props, nah pada bagian ini kita akan belajar mengirimkan konten
+ke dalam component.
+
+caranya, kita harus deklarasikan
+menggunakan elemen slot.
+```
+Vue.component('information', {
+ template: `
+ <div class="card">
+ <strong>Informasi</strong>
+ <hr>
+ <slot></slot>
+ </div>
+ `
+})
+```
+Kemudian component tersebut dapat kita panggil sebagai berikut.
+```
+<div id="app">
+ <information>
+ <p>Hati-hati lantai licin!</p>
+ </information>
+</div>
+```
+Nah, pada contoh di atas, elemen <slot></slot> akan di-replace dengan konten <p>Hati-hati
+lantai licin!</p>
+### Fallback Slots ~4
+Kita juga diizinkan memberikan konten default untuk suatu slot yang tidak diset di parent, caranya dengan
+menambahkan konten di dalam tag slot.
+```
+<div class="card">
+ <strong>Informasi</strong>
+ <hr>
+ <slot>Tanpa informasi</slot>
+</div>
+```
+```
+<information></information>
+```
+### Penamaan Slot ~4
+```
+<div class="card">
+ <slot name="judul"></strong>
+ <hr>
+ <slot name="isi"></slot>
+</div>
+```
+Sehingga kode componentnya menjadi
+```
+Vue.component('information', {
+ template: `
+ <div class="card">
+ <slot name="judul"></strong>
+ <hr>
+ <slot name="isi"></slot>
+ </div>
+ `
+})
+```
+Lalu bagaimana cara mendefinisikan konten masing-masing slot component tersebut pada template utama?
+Kita bisa melakukannya dengan menggunakan elemen template dengan attribut v-slot yang bernilai nama
+dari slot yang dituju.
+```
+<information>
+ <template v-slot="judul">
+ <h1>Info Penting!<h1>
+ </template>
+ <template v-slot="isi">
+ <p>Waspada, banyak curanmor!</p>
+ </template>
+</information>
+
+```
+### Scoped Slot ~4
+Lalu bagaimana jika di dalam slot tadi, kita ingin mengakses property data dari component tersebut. Misal
+untuk fallback
+```
+Vue.component('alert', {
+ data () {
+ return {
+ defaultAlert: 'Awas Bahaya',
+ }
+ },
+ template: `
+ <div>
+ <slot>{{ defaultAlert }}</strong>
+ </div>
+ `
+})
+```
+Namun hal ini tidak bisa kita lakukan, data defaultAlert tidak bisa diakses pada slot secara langsung
+karena pada hakekatnya slot ini adalah konten dari parentnya. Nah untuk menghadirkan properti data
+tersebut pada slot maka kita perlu membinding variabelnya pada slot. Berikut ini contohnya.
+```
+<div>
+ <slot :defaultJudul="defaultAlert">{{ defaultAlert }}</strong>
+</div>
+```
+
+Nah lebih dari itu, kita juga bisa mengakses variabel yang dibinding tersebut dari parent component untuk
+didistribusikan kembali pada kontent slot,
+```
+<alert>
+ <template v-slot:default="slotData">
+ <h1>{{ slotData.defaultAlert }}<h1>
+ </template>
+</alert>
+ ```
+> Catatan: slotData hanyalah sebuah nama variabel, kamu bisa gunakan nama lain. Sedangkan default
+adalah nama dari slot (karena pada slot component alert tidak didefinisikan namanya maka kita bisa
+pakai default).
+
+Pada contoh di atas yang hanya memiliki sebuah slot maka kita bisa tuliskan v-slot langsung pada
+componentnya tanpa elemen template lagi
+```
+<alert v-slot:default="slotData">
+ <h1>{{ slotData.defaultAlert }}<h1>
+</alert>
+```
 ### Menampilkan Data Collection
 ```javascript
 books : [
