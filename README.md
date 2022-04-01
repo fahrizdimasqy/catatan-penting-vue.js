@@ -114,6 +114,9 @@ var vm = new Vue({
 ```
 
 ## Mengenal Directive
+Directive merupakan atribut khusus yang disematkan pada elemen atau markup HTML sebagai penanda
+bahwa elemen DOM tersebut akan dikenai perlakuan tertentu oleh Vue. Directive berbentuk ekspresi
+Javascript yang secara reaktif menerapkan efek tertentu ke elemen DOM ketika nilai ekspresinya berubah.
 
 ### v-html
 Merupakan directive yang digunakan untuk menampilkan data berupa kode HTML
